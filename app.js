@@ -7,16 +7,6 @@ const app = express();
  */
 app.use(express.json());
 
-// app.get('/', (req, res) => {
-//   res
-//     .status(200)
-//     .json({ message: 'Hello from the server side!', app: 'Natours' });
-// });
-
-// app.post('/', (req, res) => {
-//   res.send('You can post to this endpoing...');
-// });
-
 /**
  * Загрузить список туров из файла
  */
@@ -65,7 +55,6 @@ app.get('/api/v1/tours/:id', (req, res) => {
  * Добавить новый тур
  */
 app.post('/api/v1/tours', (req, res) => {
-  // console.log(req.body);
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
 
@@ -90,6 +79,49 @@ app.post('/api/v1/tours', (req, res) => {
     }
   );
 });
+
+app.patch('/api/v1/tours/:id', (req, res) => {
+  const id = req.params.id * 1;
+  const tour = tours.find((el) => el.id === id);
+
+  // Если тур не найден, ответить 404 с ошибкой
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: '<Updated tour here>',
+    },
+  });
+});
+
+app.delete('/api/v1/tours/:id', (req, res) => {
+  console.log(req.params);
+  const id = req.params.id * 1;
+  const tour = tours.find((el) => el.id === id);
+
+  // Если тур не найден, ответить 404 с ошибкой
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
+// app.put('/api/v1/tours', (req, res) = > {
+
+// });
 
 const port = 3000;
 app.listen(port, () => {
