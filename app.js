@@ -17,7 +17,7 @@ const tours = JSON.parse(
 /**
  * Получить список всех туров
  */
-app.get('/api/v1/tours', (req, res) => {
+const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
     results: tours.length,
@@ -25,12 +25,12 @@ app.get('/api/v1/tours', (req, res) => {
       tours,
     },
   });
-});
+};
 
 /**
  * Получить тур по id
  */
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTour = (req, res) => {
   console.log(req.params);
   const id = req.params.id * 1;
   const tour = tours.find((el) => el.id === id);
@@ -49,12 +49,12 @@ app.get('/api/v1/tours/:id', (req, res) => {
       tour,
     },
   });
-});
+};
 
 /**
  * Добавить новый тур
  */
-app.post('/api/v1/tours', (req, res) => {
+const createTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
 
@@ -78,9 +78,12 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
-});
+};
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+/**
+ * Обновить существующий тур
+ */
+const updateTour = (req, res) => {
   const id = req.params.id * 1;
   const tour = tours.find((el) => el.id === id);
 
@@ -98,9 +101,12 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tour: '<Updated tour here>',
     },
   });
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+/**
+ * Удалить существующий тур
+ */
+const deleteTour = (req, res) => {
   console.log(req.params);
   const id = req.params.id * 1;
   const tour = tours.find((el) => el.id === id);
@@ -117,11 +123,18 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     status: 'success',
     data: null,
   });
-});
+};
 
-// app.put('/api/v1/tours', (req, res) = > {
+/**
+ * Routes
+ */
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
 
-// });
+app
+  .route('/api/v1/tours/:id')
+  .get(getTour)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 const port = 3000;
 app.listen(port, () => {
