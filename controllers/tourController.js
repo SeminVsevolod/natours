@@ -8,6 +8,42 @@ const tours = JSON.parse(
 );
 
 /**
+ * Проверить наличие id в req.params
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @param {*} val 
+ */
+exports.checkID = (req, res, next, val) => {
+  const tour = tours.find((el) => el.id === +req.params.id);
+  // Если тур не найден, ответить 404 с ошибкой
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
+/**
+ * Проверить body на наличие name или price
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+exports.checkBody = (req, res, next) => {
+  // Если тур не найден, ответить 404 с ошибкой
+  if (!req.body.price || !req.body.name) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Name or price is missed'
+    });
+  }
+  next();
+};
+
+/**
  * Получить список всех туров
  */
 exports.getAllTours = (req, res) => {
@@ -26,17 +62,8 @@ exports.getAllTours = (req, res) => {
  * Получить тур по id
  */
 exports.getTour = (req, res) => {
-  console.log(req.params);
-  const id = req.params.id * 1;
+  const id = +req.params.id;
   const tour = tours.find((el) => el.id === id);
-
-  // Если тур не найден, ответить 404 с ошибкой
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
 
   res.status(200).json({
     status: 'success',
@@ -79,16 +106,8 @@ exports.createTour = (req, res) => {
  * Обновить существующий тур
  */
 exports.updateTour = (req, res) => {
-  const id = req.params.id * 1;
+  const id = +req.params.id;
   const tour = tours.find((el) => el.id === id);
-
-  // Если тур не найден, ответить 404 с ошибкой
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
 
   res.status(200).json({
     status: 'success',
@@ -102,17 +121,8 @@ exports.updateTour = (req, res) => {
  * Удалить существующий тур
  */
 exports.deleteTour = (req, res) => {
-  console.log(req.params);
-  const id = req.params.id * 1;
+  const id = +req.params.id;
   const tour = tours.find((el) => el.id === id);
-
-  // Если тур не найден, ответить 404 с ошибкой
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
 
   res.status(204).json({
     status: 'success',

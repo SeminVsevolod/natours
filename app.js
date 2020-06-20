@@ -10,12 +10,22 @@ const app = express();
  * | MIDDLEWARES  |
  * +--------------+
  */
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') {
+  /**
+   * Выводит информацию о запросах в консоль
+   */
+  app.use(morgan('dev'));
+}
 
 /**
  * Дает доступ к req.body в виде JSON
  */
 app.use(express.json());
+
+/**
+ * Отдавать статические файлы из папки public
+ */
+app.use(express.static(`${__dirname}/public`));
 
 /**
  * Записывает время запроса в requestTime
