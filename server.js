@@ -23,8 +23,7 @@ const DB = process.env.DATABASE.replace(
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
+    useUnifiedTopology: true,
   })
   .then((connection) =>
     console.log(
@@ -33,6 +32,7 @@ mongoose
   )
   .catch((err) => console.log(`DB connection failed -> ${err.message}`));
 
+// Описываем схему для туров
 const tourSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -48,7 +48,24 @@ const tourSchema = new mongoose.Schema({
     required: [true, 'A tour must have a price'],
   },
 });
+
+// Создаем модель тура на основе описанной ранее схемы
 const Tour = mongoose.model('Tour', tourSchema);
+
+// Создаем экземпляр тура
+const testTour = new Tour({
+  name: 'The Park Camper',
+  rating: 4.7,
+  price: 397,
+});
+
+// Пытаемся сохранить экземпляр как документ в бд монго
+testTour
+  .save()
+  .then((document) => {
+    console.log('document created ->', document);
+  })
+  .catch((err) => console.log('ERROR 💣 ->', err));
 
 /**
  * +---------------+
