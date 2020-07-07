@@ -1,23 +1,6 @@
 const Tour = require('../models/tourModel');
 
 /**
- * Проверить body на наличие name или price
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
-exports.checkBody = (req, res, next) => {
-  // Если тур не найден, ответить 404 с ошибкой
-  if (!req.body.price || !req.body.name) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Name or price is missed',
-    });
-  }
-  next();
-};
-
-/**
  * Получить список всех туров
  */
 exports.getAllTours = (req, res) => {
@@ -49,16 +32,25 @@ exports.getTour = (req, res) => {
 /**
  * Добавить новый тур
  */
-exports.createTour = (req, res) => {
-  /**
-   * Статус 201 озн. "ресурс создан"
-   */
-  res.status(201).json({
-    // status: 'success',
-    // data: {
-    //   tour: newTour,
-    // },
-  });
+exports.createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
+
+    /**
+     * Статус 201 озн. "ресурс создан"
+     */
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
 };
 
 /**
