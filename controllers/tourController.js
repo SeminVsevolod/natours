@@ -68,15 +68,25 @@ exports.createTour = async (req, res) => {
 /**
  * Обновить существующий тур
  */
-exports.updateTour = (req, res) => {
-  // const id = +req.params.id;
-  // const tour = tours.find((el) => el.id === id);
-  // res.status(200).json({
-  //   status: 'success',
-  //   data: {
-  //     tour: '<Updated tour here>',
-  //   },
-  // });
+exports.updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
 };
 
 /**
